@@ -2,3 +2,4 @@ flask
 flask-cors
 gunicorn
 youtube-transcript-api
+yt_dlp
