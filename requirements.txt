@@ -1,2 +1,4 @@
 flask
-youtube_transcript_api
+flask-cors
+gunicorn
+youtube-transcript-api
