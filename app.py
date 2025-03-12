@@ -2,9 +2,13 @@ from flask import Flask, request, jsonify
 from youtube_transcript_api import YouTubeTranscriptApi
 from flask_cors import CORS  
 import re
+import requests
 
 app = Flask(__name__)
 CORS(app)  
+
+# ScraperAPI key (Replace with your actual API key)
+SCRAPER_API_KEY = "b2cd891913a261a35c4b577b1b74524a"
 
 # Function to extract video ID from any YouTube URL
 def extract_video_id(url):
@@ -24,10 +28,17 @@ def extract_video_id(url):
 
     return video_id
 
-# Function to extract transcript
+# Function to extract transcript using ScraperAPI
 def extract_transcript(video_id):
-    transcript = YouTubeTranscriptApi.get_transcript(video_id)
-    return " ".join([t['text'] for t in transcript])
+    # ScraperAPI URL
+    scraper_url = f"https://api.scraperapi.com/?api_key={SCRAPER_API_KEY}&url=https://www.youtube.com/watch?v={video_id}"
+
+    try:
+        # Fetch transcript using ScraperAPI proxy
+        transcript = YouTubeTranscriptApi.get_transcript(video_id, proxies={"http": scraper_url, "https": scraper_url})
+        return " ".join([t['text'] for t in transcript])
+    except Exception as e:
+        return str(e)
 
 @app.route('/get_transcript', methods=['POST'])
 def get_transcript():
